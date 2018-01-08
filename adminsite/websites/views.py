@@ -7,11 +7,9 @@ from users.models import User
 
 def iniView(request):
     if str(request.user) == "AnonymousUser":
-        print(str(request.user))
         return HttpResponseRedirect('/userlogin/')
     else:
         if request.method == 'POST':
-            print(request.POST)
             date = request.POST.get('date')
             hora1 = request.POST.get('hora1')
             hora2 = request.POST.get('hora2')
@@ -19,15 +17,25 @@ def iniView(request):
             file = request.POST.get('file')
             userid = request.POST.get('userid')
             usuario = User.objects.get(id=userid)
-            print(usuario)
-            registro = TimeWorked.objects.create(user=usuario, date=date, start=hora1 ,finish=hora2,context=context)
+            registro = TimeWorked(
+                user=usuario,
+                date=date,
+                start=hora1,
+                finish=hora2,
+                context=context,
+                work_order=request.POST.get('work_order'),
+                img=request.FILES['img'],
+                )
+            registro.save()
             print('------------')
-            print (str(registro))
-        print('no es usuario anonimo y se llama '+str(request.user))
+            print(request.FILES)
+            print('------------')
         return render(request, 'worker.html', )
 
 
 def LoginView(request):
+    if str(request.user) != "AnonymousUser":
+        return HttpResponseRedirect('/')
     if request.method == 'GET':
         context = {
             'error': False,
@@ -57,3 +65,8 @@ def LogoutView(request):
 
 def error404(request):
     return render(request, 'error404.html')
+
+def WorkOrder(request):
+    if str(request.user) == "AnonymousUser":
+        return HttpResponseRedirect('/userlogin/')
+    return render(request, 'workOrder.html')

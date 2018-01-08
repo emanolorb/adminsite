@@ -9,6 +9,8 @@ class TimeWorked(models.Model):
     start = models.CharField(max_length=80, blank=True)
     finish = models.CharField(max_length=20, blank=True)
     context = models.CharField(max_length=120, blank=True)
+    work_order = models.CharField(max_length=80)
+    img = models.ImageField(upload_to='albums/images/%Y/%m/%d')
     # # adjuntos
     # document = models.FileField(upload_to='documents/%Y/%m/%d')
     # uploaded_at = models.DateTimeField(auto_now_add=True, editable=False)

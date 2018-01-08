@@ -1,0 +1,34 @@
+{% extends "base/htmlbase.html" %}
+{% block contenido %}
+        <div class="container">
+
+
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                            <th>Item Name</th>
+                            <th>Item Price</th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <tr>
+                        <td>Alvin</td>
+                        <td>Eclair</td>
+                        <td>$0.87</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+
+        </div>
+    {% block customscript %}
+        <script  type="text/javascript">
+            $(document).ready(function() {
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

@@ -23,13 +23,19 @@ class BaseUser(User):
     def __str__(self, *args, **kwargs):
         return self.email
 
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        self.type = "admin"
+        self.set_password(self.password)
+        super(BaseUser, self).save(*args, **kwargs)
+
+
+
 class AdminUser(BaseUser):
     phone = models.CharField(max_length=13, validators=[validate_phone_number])
 
     def save(self, *args, **kwargs):
         self.full_clean()
         self.type = "admin"
+        self.is_staff = True
         super(AdminUser, self).save(*args, **kwargs)
-
-    class Meta(BaseUser.Meta):
-        pass
