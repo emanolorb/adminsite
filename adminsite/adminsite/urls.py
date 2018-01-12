@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from websites.views import error404, iniView, LoginView, LogoutView, WorkOrder
+from websites.views import error404, iniView, LoginView, LogoutView, WorkOrderView
 from django.conf import settings
 from django.views.static import serve
 
@@ -25,6 +25,6 @@ urlpatterns = [
     url(r'^$', iniView),
     url(r'^userlogin/$', LoginView),
     url(r'^logout/$', LogoutView),
-    url(r'^WorkOrder/$', WorkOrder),
+    url(r'^WorkOrder/$', WorkOrderView),
     url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]

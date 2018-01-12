@@ -1,38 +1,85 @@
 {% extends "base/htmlbase.html" %}
+
+{% block estilo %}
+    .modal.bottom-sheet {
+        top: auto;
+        bottom: -100%;
+        margin: 0;
+        width: 100%;
+        max-height: 70%;
+        border-radius: 0;
+        will-change: bottom, opacity;
+    }
+{% endblock %}
+
+
 {% block contenido %}
 
-        <div class="container">
 
-       
+<div class="container row">
+    <br>
+    <br>    
+  <!-- Modal Trigger -->
 
-
-
-                <div class="col s12 m8 offset-m2 l6 offset-l3">
-                        <div class="card-panel grey lighten-5 z-depth-1">
-                          <div class="row valign-wrapper">
-                            <div class="col s2">
-                              <img src="https://www.adjust.com/new-assets/images/site-images/interface/user.svg" alt="" class="circle responsive-img"> <!-- notice the "circle" class -->
-                            </div>
-                            <div class="col s10">
-                              <span class="black-text center-align">
-                                   {{ request.user }}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+  <a class="waves-effect waves-light btn btn-floating modal-trigger pink lighten-1" href="#modal1"><i class="material-icons">add</i></a>
 
 
+  <!-- modificar esta tabla con datos de tiempo trabajado en work ordert -->
+  <table>
+    <thead>
+        <tr>
+            <th>Opening Date</th>
+            <th>W/O#</th> 
+            <th>Customer</th>
+            <th>Description</th>
+            <th>Active</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for order in orders %}
+            <tr>
+                <td>{{ order.opening_date }}</td>
+                <td>{{ order.number }}</td>
+                <td>{{ order.customer.name }}</td>
+                <td>{{ order.description }}</td>
+                <td>{% if order.is_active %}
+                        <i class="material-icons green-text text-ighten-3">check_circle</i>
+                    {% else %}
+                        <i class="material-icons red-text text-accent-2">do_not_disturb_on</i>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 
 
 
-            <form action="/" method="POST" enctype="multipart/form-data">
+
+  <!-- Modal Structure -->
+<form action="/" method="POST" enctype="multipart/form-data">
+    <div id="modal1" class="modal bottom-sheet">
+    <div class="modal-content">
                 {% csrf_token %}
-                    <!-- datepiker -->
-                    <div class="input-field col s12">
-                    <input id="datepiker"  name="date" type="text" class="datepicker validate" required="" aria-required="true">
-                    <label for="datepiker"  data-error="wrong" data-success="right">Datepiker</label>
+                    <div class="row col s12">
+                        <!-- datepiker -->
+                        <div class="input-field col s6">
+                        <input id="datepiker"  name="date" type="text" class="datepicker validate" required="" aria-required="true">
+                        <label for="datepiker"  data-error="wrong" data-success="right">Datepiker</label>
+                        </div>
+
+
+                        <div class="input-field col s6">
+                                <select name="workorder">
+                                    <option value="" disabled selected>Choose your option</option>
+                                        {% for order in orders %}
+                                            <option value="{{order.id}}">{{order}}</option>
+                                        {% endfor %}
+                                </select>
+                                <label>Materialize Select</label>
+                        </div>
                     </div>
                     <!-- timepiker -->
                     <div class="row col s12">
@@ -50,58 +97,87 @@
                         <textarea id="textarea1" name="context" class="materialize-textarea" data-length="120"></textarea>
                         <label for="textarea1">Context</label>
                     </div>
-                    <!-- textarea -->
-                    <div class="input-field col s12">
-                        <textarea id="textarea2" name="work_order" class="materialize-textarea" data-length="120"></textarea>
-                        <label for="textarea2">Context2</label>
+                    <div class="row col s12">
+                        <!-- file -->
+                        <div class="file-field input-field col s6">
+                            <div class="btn pink lighten-1">
+                                <span>File</span>
+                                <input type="file" name="img">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
+                            </div>
+                        </div>
+
+                        <div class="input-field col s6">
+                            <input placeholder="Placeholder" id="location" name="location" type="text" class="validate">
+                            <label for="location">Location</label>
+                        </div>
+
+
                     </div>
-                    <!-- file -->
-                    <div class="file-field input-field">
-                    <div class="btn">
-                        <span>File</span>
-                        <input type="file" name="img">
-                    </div>
-                    <div class="file-path-wrapper">
-                        <input class="file-path validate" type="text">
-                    </div>
-                    </div>
-                    <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-                            <i class="material-icons right">send</i>
-                    </button>
-                    <input type="hidden" name="userid" value="{{ request.user.id }}">
-            </form>
+    </div>
+    <div class="modal-footer">
+            <button class="modal-action modal-close btn waves-effect waves-light pink lighten-1" type="submit" name="action">Save
+                    <i class="material-icons right">send</i>
+            </button>
+    </div>
+  </div>
+</form>
 
 
 
 
 
-        </div>
 
 
-    {% block customscript %}
-        <script  type="text/javascript">
-            $(document).ready(function() {
-                $('input#input_text, textarea#textarea1').characterCounter();
-                $('.timepicker').pickatime({
-                    default: 'now', // Set default time: 'now', '1:30AM', '16:30'
-                    fromnow: 0,       // set default time to * milliseconds from now (using with default = 'now')
-                    twelvehour: false, // Use AM/PM or 24-hour format
-                    donetext: 'OK', // text for done-button
-                    cleartext: 'Clear', // text for clear-button
-                    canceltext: 'Cancel', // Text for cancel-button
-                    autoclose: false, // automatic close timepicker
-                    ampmclickable: true, // make AM PM clickable
-                    aftershow: function(){} //Function for after opening timepicker
-                });
-                $('.datepicker').pickadate({
-                    selectMonths: true, // Creates a dropdown to control month
-                    selectYears: 15, // Creates a dropdown of 15 years to control year,
-                    today: 'Today',
-                    clear: 'Clear',
-                    close: 'Ok',
-                    closeOnSelect: false // Close upon selecting a date,
-                });
-            });
-        </script>
-    {% endblock %}
+
+
+
+
+
+
+
+
+
+
+</div>
+{% endblock %}
+{% block customscript %}
+<script  type="text/javascript">
+    $(document).ready(function() {
+        $('input#input_text, textarea#textarea1').characterCounter();
+        $('.timepicker').pickatime({
+            default: 'now', // Set default time: 'now', '1:30AM', '16:30'
+            fromnow: 0,       // set default time to * milliseconds from now (using with default = 'now')
+            twelvehour: false, // Use AM/PM or 24-hour format
+            donetext: 'OK', // text for done-button
+            cleartext: 'Clear', // text for clear-button
+            canceltext: 'Cancel', // Text for cancel-button
+            autoclose: false, // automatic close timepicker
+            ampmclickable: true, // make AM PM clickable
+            aftershow: function(){} //Function for after opening timepicker
+        });
+        $('.datepicker').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year,
+            today: 'Today',
+            clear: 'Clear',
+            close: 'Ok',
+            closeOnSelect: false // Close upon selecting a date,
+        });
+        $('.modal').modal({
+            dismissible: true, // Modal can be dismissed by clicking outside of the modal
+            opacity: .5, // Opacity of modal background
+            inDuration: 300, // Transition in duration
+            outDuration: 200, // Transition out duration
+            startingTop: '100%', // Starting top style attribute
+            endingTop: '100%', // Ending top style attribute
+        });
+        $('select').material_select();
+        {% if save %}
+        Materialize.toast('Saved!', 3000, 'rounded');
+        {% endif %}
+    });
+</script>
 {% endblock %}

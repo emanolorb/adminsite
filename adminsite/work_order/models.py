@@ -8,6 +8,7 @@ class WorkOrder(models.Model):
     customer = models.ForeignKey(Customer)
     description = models.TextField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True, editable=True)
 
     def __str__(self, *args, **kwargs):
         return "%s - %s" % (self.number, self.opening_date)

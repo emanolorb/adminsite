@@ -4,15 +4,15 @@ from .models import Customer, CustomerRating
 # Register your models here.
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'phone', 'email', 'cr', 'is_active', 'created_at']
-    fields = ['name', 'phone', 'email', 'cr', 'is_active']
+    list_display = ['id', 'name', 'phone', 'email', 'cr', 'customer_since', 'is_active', 'created_at']
+    fields = ['name', 'phone', 'email', 'cr', 'customer_since', 'is_active']
     search_fields = [
         'name',
         'phone',
     ]
-    readonly_fields = [
-        'email',
-    ]
+    # readonly_fields = [
+    #     'email',
+    # ]
 
 
 @admin.register(CustomerRating)
