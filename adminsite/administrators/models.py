@@ -25,7 +25,6 @@ class BaseUser(User):
 
     def save(self, *args, **kwargs):
         self.full_clean()
-        self.type = "admin"
         self.set_password(self.password)
         super(BaseUser, self).save(*args, **kwargs)
 

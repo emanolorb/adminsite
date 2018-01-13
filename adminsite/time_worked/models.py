@@ -6,7 +6,7 @@ from work_order.models import WorkOrder
 class TimeWorked(models.Model):
     # Datos generales
     user = models.ForeignKey(User)
-    date = models.CharField(max_length=80, blank=True)
+    date = models.DateField(null=True,blank=True)
     start = models.CharField(max_length=80, blank=True)
     finish = models.CharField(max_length=20, blank=True)
     context = models.CharField(max_length=120, blank=True)

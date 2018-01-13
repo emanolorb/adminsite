@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from time_worked.models import TimeWorked
 from work_order.models import WorkOrder
 from users.models import User
@@ -11,22 +11,29 @@ def iniView(request):
     if str(request.user) == "AnonymousUser":
         return HttpResponseRedirect('/userlogin/')
     else:
+        TimeWorked_obj = TimeWorked.objects.filter(user=request.user)
         WorkOrder_obj = WorkOrder.objects.filter(is_active=True)
         context = {
             'orders': WorkOrder_obj,
             'save': False,
+            'works': TimeWorked_obj,
         }
+        if ('date' in request.GET):
+            datefilter = request.GET.get('date')
+            if (request.GET.get('date') != ''):
+                context['datefilter'] = datefilter
+                datefilter = datefilter.split("-")
+                datefilter = date(int(datefilter[0]),int(datefilter[1]),int(datefilter[2]))
+                fecha1 = datefilter + timedelta(days=1)
+                fecha2 = datefilter - timedelta(days=1)
+                context['works'] = TimeWorked_obj.filter(date__range=(datefilter, datefilter))
+                TimeWorked_obj = TimeWorked_obj.filter(date__range=(datefilter, datefilter))
+        # filter(pub_date__gte=datetime.date(2005, 1, 30))
         if request.method == 'POST':
-            print(request.POST)
             formato = "%H:%M"
             h1 = datetime.strptime(request.POST.get('hora1'), formato)
             h2 = datetime.strptime(request.POST.get('hora2'), formato)
             resultado = h2 - h1
-            print('----------------')
-            print(h2)
-            print('-------menos---------')
-            print(h1)
-            print('------igual----------')
             resultado = str(resultado).split(":")
             workorderobj = WorkOrder.objects.get(id=request.POST.get('workorder'))
             usuario = User.objects.get(id=request.user.id)
@@ -41,10 +48,21 @@ def iniView(request):
                 minutes=int(resultado[1]),
                 location=request.POST.get('location'),
                 img=request.FILES['img'],
-                # location=request.POST.get('location'),
                 )
             registro.save()
             context['save'] = True
+        if (TimeWorked_obj.count() > 0):
+            h = 0
+            m = 0
+            for works in TimeWorked_obj:
+                h = h + works.hours
+                m = m + works.minutes
+            hm = int(m/60)
+            m = m - (hm*60)
+            h = h + hm
+            context['horastotal'] = True
+            context['horas'] = str(h) + " hours "+ str(m) + " minutes "
+            print(context)
         return render(request, 'worker.html', context )
 
 
