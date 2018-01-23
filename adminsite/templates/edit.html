@@ -1,0 +1,151 @@
+{% extends "base/htmlbase.html" %}
+{% load static %}
+{% block estilo %}
+    <!-- .modal.bottom-sheet {
+        top: 463px;
+    } -->
+{% endblock %}
+
+
+{% block scripstop %}
+    <script>
+        function validar(){
+            console.log("esta cambienado");
+            document.getElementById("imagen").style.display = "none";
+        }
+        function regresa(event){
+            event.preventDefault();
+            console.log("hola")
+            var urlini = window.location.href;
+            console.log("hola")
+            urlini = urlini.split("/edit/");
+            window.location.href = urlini[0];
+            console.log("hola")
+        }
+    </script>
+{% endblock %}
+
+{% block contenido %}
+<div class="container row">
+    {% if vacio %}
+    <h1>Incorrect Data</h1>
+    {% else %}
+    <h1>Edit : {{ work }}</h1>
+
+
+
+
+
+
+
+      <!-- form -->
+    <form action="#" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row col s12">
+            <!-- datepiker -->
+            <div class="input-field col s6">
+            <input id="datepiker" disabled name="date" type="text" class="datepicker">
+            <label for="datepiker">Datepiker</label>
+            </div>
+            <!-- Select -->
+            <div class="input-field col s6">
+                    <select name="workorder" id"myselect">
+                        <optgroup label="Current">
+                                    <option value="{{ Workselect_obj.id }}">{{Workselect_obj}}</option>
+                        </optgroup>
+                        <optgroup label="New selection">
+                            {% for order in orders %}
+                                <option value="{{order.id}}">{{order}}</option>
+                            {% endfor %}
+                        </optgroup>
+                    </select>
+                    <label>Work Order</label>
+            </div>
+        </div>
+        <div class="row col s12">
+            <!-- hora1 -->
+            <div class="input-field col s6">
+                <input id="start" name="Start" type="text" class="timepicker validate">
+                <label for="start">Start</label>
+            </div>
+            <!-- hora2 -->
+            <div class="input-field col s6 validate">
+                <input id="finish" name="Finish" type="text" class="timepicker">
+                <label for="finish">Finish</label>
+            </div>
+        </div>
+        <div class="col s12">
+            <!-- textarea -->
+            <div class="input-field col s6">
+                <textarea id="textarea1" name="context" class="materialize-textarea" data-length="120"></textarea>
+                <label for="textarea1">Description</label>
+            </div>
+            <!-- location -->
+            <div class="input-field col s6">
+                <input placeholder="ejm.. cdmx" id="location" name="location" type="text">
+                <label for="location">Location</label>
+            </div>
+        </div>
+        <div class="row col s12">
+            <!-- file -->
+            <div class="file-field input-field col s6">
+                    <div class="btn pink lighten-1">
+                        <span>File</span>
+                        <input type="file" name="img">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" id="idfilepath" onchange="validar()" type="text">
+                    </div>
+            </div>
+            <!-- imagen -->
+            <div id="imagen"><img class="materialboxed" width="150" src="{{work.img.url}}"></div>
+        </div>
+        <div class="center-align">
+            <button class="btn waves-effect waves-light pink lighten-1" onclick="regresa(event)" >Back
+                    <i class="material-icons right">arrow_back</i>
+            </button>
+            <button class="btn waves-effect waves-light pink lighten-1" type="submit" name="action">Save
+                    <i class="material-icons right">send</i>
+            </button>
+        </div>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
+{% block customscript %}
+<script  type="text/javascript">
+    $(document).ready(function() {
+        $('select').material_select();
+        $('input#input_text, textarea#textarea1').characterCounter();
+        $('.timepicker').pickatime({
+            default: 'now', // Set default time: 'now', '1:30AM', '16:30'
+            fromnow: 0,       // set default time to * milliseconds from now (using with default = 'now')
+            twelvehour: false, // Use AM/PM or 24-hour format
+            donetext: 'OK', // text for done-button
+            cleartext: 'Clear', // text for clear-button
+            canceltext: 'Cancel', // Text for cancel-button
+            autoclose: false, // automatic close timepicker
+            ampmclickable: true, // make AM PM clickable
+            aftershow: function(){} //Function for after opening timepicker
+        });
+        $('.datepicker').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year,
+            today: 'Today',
+            clear: 'Clear',
+            close: 'Ok',
+            closeOnSelect: false, // Close upon selecting a date,
+            format: 'yyyy-mm-dd'
+        });
+        document.getElementById("datepiker").value = '{{ work.date }}';
+        document.getElementById("start").value = '{{ work.start }}';
+        document.getElementById("finish").value = '{{ work.finish }}';
+        document.getElementById("textarea1").value = '{{ work.context }}';
+        document.getElementById("idfilepath").value = '{{ work.img }}';
+        document.getElementById("location").value = '{{ work.location }}'
+        {% if save %}
+        Materialize.toast('Saved, success!', 3000, 'rounded');
+        {% endif %}
+    });
+</script>
+{% endblock %}

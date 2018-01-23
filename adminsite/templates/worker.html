@@ -1,15 +1,9 @@
 {% extends "base/htmlbase.html" %}
 
 {% block estilo %}
-    .modal.bottom-sheet {
-        top: auto;
-        bottom: -100%;
-        margin: 0;
-        width: 100%;
-        max-height: 70%;
-        border-radius: 0;
-        will-change: bottom, opacity;
-    }
+    <!-- .modal.bottom-sheet {
+        top: 463px;
+    } -->
 {% endblock %}
 
 
@@ -31,6 +25,63 @@
             var urlfin = urlini + '?date=' + date;
             window.location.href = urlfin;
         }
+        function validar(event){
+            var filepath = $('#idfilepath').val();
+            var description = $('#textarea1').val();
+            var location = $('#location').val();
+            var idselect = $('#myselect option:selected').val();
+            var datepiker = $('#datepiker').val();
+            var start = $('#start').val();
+            var finish = $('#finish').val();
+            // console.log("--------")
+            // console.log(filepath)
+            // console.log(description)
+            // console.log(location)
+            // console.log(idselect)
+            // console.log(datepiker)
+            // console.log(start)
+            // console.log(finish)
+            // console.log("--------")
+            // var urlini = window.location.href;
+            if(filepath != ''){
+                if(description != ''){
+                    if(location != ''){
+                        if(datepiker != ''){
+                            if(start != ''){
+                                if(finish != ''){
+                                    Materialize.toast('Data correct!', 3000, 'rounded');
+                                }else{
+                                    Materialize.toast('Missing data, please try again!', 2000, 'rounded');
+                                    event.preventDefault();
+                                }        
+                            }else{
+                                Materialize.toast('Missing data, please try again!', 2000, 'rounded');
+                                event.preventDefault();
+                            }    
+                        }else{
+                            Materialize.toast('Missing data, please try again!', 2000, 'rounded');
+                            event.preventDefault();
+                        }  
+                    }else{
+                        Materialize.toast('Missing data, please try again!', 2000, 'rounded');
+                        event.preventDefault();
+                    }  
+                }else{
+                    Materialize.toast('Missing data, please try again!', 2000, 'rounded');
+                    event.preventDefault();
+                }  
+            }else{
+                Materialize.toast('Missing data, please try again!', 2000, 'rounded');
+                event.preventDefault();
+            }  
+
+            // var dateto = $('#dateto').val();
+            // var select2 = $('#select2').val();
+            // var select = $('#select').val();
+            // var addurl = '?busqueda='+busqueda+'&'+'datefrom='+datefrom+'&'+'dateto='+dateto+'&'+'select2='+select2+'&'+'select='+select+'&export=True';
+            // var urlfin = urlini + addurl;
+            // window.location.href = urlfin;
+        }
     </script>
 {% endblock %}
 
@@ -40,19 +91,20 @@
 <div class="container row">
     <br>
     <br>    
-        <div class="col s12">
+        <div class="col s12 m12 l12">
         <!-- Modal Trigger -->
-        <div class="col s1">
-                <a class="waves-effect waves-light btn btn-floating modal-trigger pink lighten-1 hoverable" href="#modal1"><i class="material-icons">add</i></a>
+        <div class="col s2 m1 l1">
+                <a class="waves-effect waves-light btn btn-floating modal-trigger pink lighten-1 hoverable tooltipped" href="#modal1"  data-position="bottom" data-delay="50" data-tooltip="Add"><i class="material-icons">add</i></a>
         </div>
-        <div class="input-field col s2">
+        <div class="input-field col s4 m3 l2">
             <i class="material-icons prefix">search</i>
             <input type="text" id="filtro" name="filtro" onchange="send(event)" class="datepicker">
             <label for="icon_prefix2">Search</label>
         </div>
     </div>
+
     <!-- modificar esta tabla con datos de tiempo trabajado en work ordert -->
-    <table>
+    <table class="striped">
         <thead>
             <tr>
                 <th>#WO</th>
@@ -63,6 +115,7 @@
                 <th>Finish</th>
                 <th>image</th>
                 <th>Total</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -75,7 +128,8 @@
                     <td>{{ work.start }}</td>
                     <td>{{ work.finish }}</td>
                     <td><img src="{{work.img.url}}" style="height: 37px;" class="circle responsive-img"></td>
-                    <td>{{ work.hours }} horas {{ work.minutes }} minutes </td>
+                    <td>{{ work.hours }}:{% if  work.minutes == 0 %}00{% else %}{{ work.minutes }}{% endif %}</td>
+                    <td>{% if  querytoday %}<a class="tooltipped" href="/edit/{{ work.id }}"   data-position="top" data-delay="50" data-tooltip="Edit"><i class="material-icons">edit</i></a>{% endif %}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -97,14 +151,13 @@
                     <div class="row col s12">
                         <!-- datepiker -->
                         <div class="input-field col s6">
-                        <input id="datepiker"  name="date" type="text" class="datepicker validate" required="" aria-required="true">
-                        <label for="datepiker"  data-error="wrong" data-success="right">Datepiker</label>
+                        <input id="datepiker"  name="date" type="text" class="datepicker">
+                        <label for="datepiker">Datepiker</label>
                         </div>
 
 
                         <div class="input-field col s6">
-                                <select name="workorder">
-                                    <option value="" disabled selected>Choose your order</option>
+                                <select name="workorder" id"myselect">
                                         {% for order in orders %}
                                             <option value="{{order.id}}">{{order}}</option>
                                         {% endfor %}
@@ -118,7 +171,7 @@
                         <input id="start" name="hora1" type="text" class="timepicker validate">
                         <label for="start">Start</label>
                         </div>
-                        <div class="input-field col s6">
+                        <div class="input-field col s6 validate">
                         <input id="finish" name="hora2" type="text" class="timepicker">
                         <label for="finish">Finish</label>
                         </div>
@@ -136,12 +189,12 @@
                                 <input type="file" name="img">
                             </div>
                             <div class="file-path-wrapper">
-                                <input class="file-path validate" type="text">
+                                <input class="file-path validate" id="idfilepath" type="text">
                             </div>
                         </div>
 
                         <div class="input-field col s6">
-                            <input placeholder="Placeholder" id="location" name="location" type="text" class="validate">
+                            <input placeholder="Placeholder" id="location" name="location" type="text">
                             <label for="location">Location</label>
                         </div>
 
@@ -149,7 +202,7 @@
                     </div>
     </div>
     <div class="modal-footer">
-            <button class="modal-action modal-close btn waves-effect waves-light pink lighten-1" type="submit" name="action">Save
+            <button class="modal-action modal-close btn waves-effect waves-light pink lighten-1" type="submit" onclick="validar(event)" name="action">Save
                     <i class="material-icons right">send</i>
             </button>
     </div>
@@ -200,12 +253,14 @@
             startingTop: '100%', // Starting top style attribute
             endingTop: '100%', // Ending top style attribute
         });
+        Materialize.updateTextFields();
         $('select').material_select();
+        $('.tooltipped').tooltip({delay: 50});
         {% if save %}
         Materialize.toast('Saved!', 3000, 'rounded');
         {% endif %}
         {% if datefilter %}
-            document.getElementById("filtro").value = '{{ datefilter }}';
+        document.getElementById("filtro").value = '{{ datefilter }}';
         {% endif %}
     });
 </script>

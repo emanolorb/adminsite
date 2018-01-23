@@ -18,4 +18,4 @@ class TimeWorked(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __str__(self):
-        return "%s - %s" % (self.user.id, self.date)
+        return "%s - %s" % (self.work_order.number, self.date)

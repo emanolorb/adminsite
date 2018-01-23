@@ -27,6 +27,10 @@
             <li><a href="/admin">Admin</a></li>
             <li><a href="/error">Payment</a></li>
             {% endif %}
+            {% if request.user.type == "admin" %}
+            <li><a href="/admin">Admin</a></li>
+            <li><a href="/error">Payment</a></li>
+            {% endif %}
             <li><a href="/WorkOrder">Work order</a></li>
             <li><a href="/">Welcome, {{ request.user }}</a></li>
             <li><a href="/logout/"><i class="material-icons right">exit_to_app</i></a></li>
@@ -35,6 +39,10 @@
             {% if request.user.is_superuser %}
             <li><a href="/admin">Admin</a></li>
             <li><a href="/error">Payment</a></li>                
+            {% endif %}
+            {% if request.user.type == "admin" %}
+            <li><a href="/admin">Admin</a></li>
+            <li><a href="/error">Payment</a></li>
             {% endif %}
             <li><a href="/WorkOrder">Work order</a></li>
             <li><a href="/">{{ request.user }}</a></li>
