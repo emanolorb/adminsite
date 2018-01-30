@@ -25,11 +25,11 @@
             <ul class="right hide-on-med-and-down">
             {% if request.user.is_superuser %}
             <li><a href="/admin">Admin</a></li>
-            <li><a href="/error">Payment</a></li>
+            <li><a href="/payment">Payment</a></li>
             {% endif %}
             {% if request.user.type == "admin" %}
             <li><a href="/admin">Admin</a></li>
-            <li><a href="/error">Payment</a></li>
+            <li><a href="/payment">Payment</a></li>
             {% endif %}
             <li><a href="/WorkOrder">Work order</a></li>
             <li><a href="/">Welcome, {{ request.user }}</a></li>
@@ -38,11 +38,11 @@
             <ul class="side-nav" id="mobile-demo">
             {% if request.user.is_superuser %}
             <li><a href="/admin">Admin</a></li>
-            <li><a href="/error">Payment</a></li>                
+            <li><a href="/payment">Payment</a></li>                
             {% endif %}
             {% if request.user.type == "admin" %}
             <li><a href="/admin">Admin</a></li>
-            <li><a href="/error">Payment</a></li>
+            <li><a href="/payment">Payment</a></li>
             {% endif %}
             <li><a href="/WorkOrder">Work order</a></li>
             <li><a href="/">{{ request.user }}</a></li>

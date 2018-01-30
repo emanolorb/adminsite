@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from datetime import datetime, timedelta, date
 from time_worked.models import TimeWorked
 from work_order.models import WorkOrder
+from workers.models import WorkerUser
 from users.models import User
 
 
@@ -170,3 +171,92 @@ def CuentaHoras(a, b):
         resultado = h2 - h1
         resultado = str(resultado).split(":")
         return(resultado[0],resultado[1])
+
+def paymentView(request):
+    if str(request.user) == "AnonymousUser":
+        return HttpResponseRedirect('/userlogin/')
+    datefilter = ""
+    rangofechas = ""
+    if request.method == 'GET':
+        userlist = []
+        if 'date' in request.GET:
+            dateget = request.GET.get('date')
+            if dateget != "":
+                datefilter = dateget
+                dateget = dateget.split("-")
+                print('-----------------')
+                fecha = datetime(int(dateget[0]), int(dateget[1]), int(dateget[2]))
+                unDia = timedelta(days=1)
+                fecha2 = fecha - timedelta(days=14)
+                rangofechas = []
+                variablefechas = []
+                for contador in range(0, 14):
+                    fecha2 = fecha2 + unDia
+                    variablefechas.append(fecha2.date())
+                    rangofechas.append(str(diasemana(fecha2.weekday())) +'\n' + str(fecha2.date()).replace("-", "/"))
+                # creamos los datos de los usuarios
+                numuser = 1
+                for u in WorkerUser.objects.filter(is_active=True):
+                    userarray = {}
+                    userarray['id'] = u.id
+                    userarray['name'] = u.name
+                    hourT = 0
+                    minutesT = 0
+                    hourTweekend = 0
+                    minutesTweekend = 0
+                    for contador2 in range(0, 14):
+                        TimeWorkedobj = TimeWorked.objects.values('hours', 'minutes').filter(user=u, date__range=(variablefechas[contador2], variablefechas[contador2]))
+                        if TimeWorkedobj.count() == 0:
+                            userarray[contador2] = "00:00"
+                        else:
+                            for times in TimeWorkedobj:
+                                hourT = hourT + times['hours']
+                                minutesT = minutesT + times['minutes']
+                                if variablefechas[contador2].weekday() == 6 or variablefechas[contador2].weekday() == 5:
+                                    hourTweekend = hourTweekend + times['hours']
+                                    minutesTweekend = minutesTweekend + times['minutes']
+                                if times['minutes'] < 10:
+                                    userarray[contador2] = str(times['hours']) + ":0" + str(times['minutes'])
+                                else:
+                                    userarray[contador2] = str(times['hours']) + ":" + str(times['minutes'])
+                    hm = int(minutesT/60)
+                    minutesT = minutesT - (hm*60)
+                    hourT = hourT + hm
+                    if minutesT < 10:
+                        userarray['htotal'] = str(hourT) + ":0" + str(minutesT)
+                    else:
+                        userarray['htotal'] = str(hourT) + ":" + str(minutesT)
+                    hm = int(minutesTweekend/60)
+                    minutesTweekend = minutesTweekend - (hm*60)
+                    hourTweekend = hourTweekend + hm
+                    if minutesTweekend < 10:
+                        userarray['hweektotal'] = str(hourTweekend) + ":0" + str(minutesTweekend)
+                    else:
+                        userarray['hweektotal'] = str(hourTweekend) + ":" + str(minutesTweekend)
+                    userlist.append(userarray)
+                    numuser = numuser + 1
+                print(userlist)
+                print("''''''''''''")
+    context = {
+        'users': userlist,
+        'rangofechas': rangofechas,
+        'prueba': 'WorkOrder_obj',        
+        'datefilter': datefilter,
+    }
+    return render(request, 'payment.html', context)
+
+def diasemana(dia):
+    if dia == 0:
+        return('Monday')
+    if dia == 1:
+        return('Tuesday')
+    if dia == 2:
+        return('Wednesday')
+    if dia == 3:
+        return('Thursday')
+    if dia == 4:
+        return('Friday')
+    if dia == 5:
+        return('Saturday')
+    if dia == 6:
+        return('Sunday')

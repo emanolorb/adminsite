@@ -1,0 +1,104 @@
+{% extends "base/htmlbase.html" %}
+
+{% block estilo %}
+    <!-- .modal.bottom-sheet {
+        top: 463px;
+    } -->
+{% endblock %}
+
+
+{% block scripstop %}
+    <script>
+        function send(event){
+            // event.preventDefault();
+            var urlini = window.location.href;
+            if(urlini.indexOf('?') != -1){
+                urlini = urlini.split("?");
+                urlini = urlini[0];
+            }
+            var date = $('#filtro').val();
+            // var datefrom = $('#datefrom').val();
+            // var dateto = $('#dateto').val();
+            // var select2 = $('#select2').val();
+            // var select = $('#select').val();
+            // var addurl = '/?busqueda='+busqueda+'&'+'datefrom='+datefrom+'&'+'dateto='+dateto+'&'+'select2='+select2+'&'+'select='+select;
+            var urlfin = urlini + '?date=' + date;
+            window.location.href = urlfin;
+        }
+    </script>
+{% endblock %}
+
+{% block contenido %}
+
+
+<div class="row">
+    <br>
+    <br>    
+    <div class="col s12 m12 l12">
+        <div class="input-field col s4 m3 l2">
+            <i class="material-icons prefix">search</i>
+            <input type="text" id="filtro" placeholder="Search" name="filtro" onchange="send(event)" class="datepicker">
+        </div>
+    </div>
+    {% if rangofechas != "" %}
+    <!-- tabla -->
+    <table class="highlight">
+        <thead>
+          <tr>
+              <th>Employees</th>
+                {% for rangof in rangofechas %}
+                    <th>{{rangof}}</th>
+                {% endfor %}
+              <th>Total WeekDays</th>
+              <th>Total Weekend</th>
+              <th>Total Hours</th>
+          </tr>
+        </thead>
+
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.0 }}</td>
+                <td>{{ user.1 }}</td>
+                <td>{{ user.2 }}</td>
+                <td>{{ user.3 }}</td>
+                <td>{{ user.4 }}</td>
+                <td>{{ user.5 }}</td>
+                <td>{{ user.6 }}</td>
+                <td>{{ user.7 }}</td>
+                <td>{{ user.8 }}</td>
+                <td>{{ user.9 }}</td>
+                <td>{{ user.10 }}</td>
+                <td>{{ user.11 }}</td>
+                <td>{{ user.12 }}</td>
+                <td>{{ user.13 }}</td>
+                <td>falta</td>
+                <td>{{ user.hweektotal }}</td>
+                <td>{{ user.htotal }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+{% endblock %}
+{% block customscript %}
+<script  type="text/javascript">
+    $(document).ready(function() {
+        Materialize.updateTextFields();
+        $('.datepicker').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year,
+            today: 'Today',
+            clear: 'Clear',
+            close: 'Ok',
+            closeOnSelect: false, // Close upon selecting a date,
+            format: 'yyyy-mm-dd'
+        });
+        {% if datefilter != "" %}
+        document.getElementById("filtro").value = '{{ datefilter }}';
+        {% endif %}
+    });
+</script>
+{% endblock %}

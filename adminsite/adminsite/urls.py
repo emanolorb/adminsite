@@ -15,12 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from websites.views import error404, iniView, LoginView, LogoutView, WorkOrderView, EditView
+from websites.views import error404, iniView, LoginView, LogoutView, WorkOrderView, EditView, paymentView
 from django.conf import settings
 from django.views.static import serve
 
 urlpatterns = [
     url(r'^edit/((?P<wrk>[0-9]{1,10})/)?$', EditView),
+    url(r'^payment/$', paymentView),
     url(r'^admin/', admin.site.urls),
     url(r'^error/$', error404),
     url(r'^$', iniView),
