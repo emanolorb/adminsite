@@ -4,7 +4,7 @@ django-environ>=0.4.0
 djangorestframework
 PyMySQL>=0.7.10
 Pillow
-django-material>=1.1.0<1.2
+django-material
 #django-reversion>=2.0.9
 django-enumfields>=0.9.0
 

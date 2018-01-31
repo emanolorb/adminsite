@@ -6,10 +6,32 @@ from .models import TimeWorked
 @admin.register(TimeWorked)
 class TimeWorkedAdmin(admin.ModelAdmin):
     list_display = ['user_id','user', 'date', 'start', 'finish', 'context', 'work_order', 'hours', 'minutes']
-    fields = ['user', 'date', 'start', 'finish', 'context', 'work_order', 'img']
+    # fields = ['user', 'date', 'start', 'finish', 'context', 'work_order', 'img']
     search_fields = [
-        'date',
+        'context',
     ]
-    # list_filter = [
-    #     'is_active',
-    # ]
+    list_filter = (
+        'user',
+        'date',
+        )
+    fieldsets = (
+        ('User', {
+            'fields': (
+                    'user',
+                )
+        }),
+        ('Work', {
+            'fields': (
+                'date',
+                'start',
+                'finish',
+                'context',
+                'img',
+            )
+        }),
+        ('Work Order', {
+            'fields': (
+                'work_order',
+            )
+        }),
+    )

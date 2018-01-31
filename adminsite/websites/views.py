@@ -204,6 +204,7 @@ def paymentView(request):
                     minutesT = 0
                     hourTweekend = 0
                     minutesTweekend = 0
+                    diasweekend = 0
                     for contador2 in range(0, 14):
                         TimeWorkedobj = TimeWorked.objects.values('hours', 'minutes').filter(user=u, date__range=(variablefechas[contador2], variablefechas[contador2]))
                         if TimeWorkedobj.count() == 0:
@@ -213,6 +214,7 @@ def paymentView(request):
                                 hourT = hourT + times['hours']
                                 minutesT = minutesT + times['minutes']
                                 if variablefechas[contador2].weekday() == 6 or variablefechas[contador2].weekday() == 5:
+                                    diasweekend = diasweekend + 1
                                     hourTweekend = hourTweekend + times['hours']
                                     minutesTweekend = minutesTweekend + times['minutes']
                                 if times['minutes'] < 10:
@@ -233,6 +235,7 @@ def paymentView(request):
                         userarray['hweektotal'] = str(hourTweekend) + ":0" + str(minutesTweekend)
                     else:
                         userarray['hweektotal'] = str(hourTweekend) + ":" + str(minutesTweekend)
+                    userarray['dweektotal'] = str(diasweekend)
                     userlist.append(userarray)
                     numuser = numuser + 1
                 print(userlist)

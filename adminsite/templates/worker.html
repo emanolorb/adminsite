@@ -127,7 +127,7 @@
                     <td>{{ work.date }}</td>
                     <td>{{ work.start }}</td>
                     <td>{{ work.finish }}</td>
-                    <td><img src="{{work.img.url}}" style="height: 37px;" class="circle responsive-img"></td>
+                    <td><img src="{{work.img.url}}" style="height: 37px;" class="circle responsive-img materialboxed"></td>
                     <td>{{ work.hours }}:{% if  work.minutes == 0 %}00{% else %}{{ work.minutes }}{% endif %}</td>
                     <td>{% if  querytoday %}<a class="tooltipped" href="/edit/{{ work.id }}"   data-position="top" data-delay="50" data-tooltip="Edit"><i class="material-icons">edit</i></a>{% endif %}</td>
                 </tr>
