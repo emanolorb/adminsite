@@ -6,7 +6,7 @@ from .models import TimeWorked
 @admin.register(TimeWorked)
 class TimeWorkedAdmin(admin.ModelAdmin):
     list_display = ['user_id','user', 'date', 'start', 'finish', 'context', 'work_order', 'hours', 'minutes']
-    # fields = ['user', 'date', 'start', 'finish', 'context', 'work_order', 'img']
+    icon = '<i class="material-icons">schedule</i>'
     search_fields = [
         'context',
     ]

@@ -5,6 +5,7 @@ from administrators.admin import BaseUserAdmin
 
 @admin.register(WorkerUser)
 class SalesmanAdmin(BaseUserAdmin):
+    icon = '<i class="material-icons">accessibility</i>'
     search_fields = [
         'phone',
         'name',

@@ -6,6 +6,7 @@ from adminsite.validators import validate_phone_number
 class BaseUser(User):
     
     name = models.CharField(max_length=128)
+    photo = models.ImageField(upload_to='albums/userphoto/%Y/%m/%d', blank=True, null=True)
     type = models.CharField(max_length=30, blank=True)
 
     # def save(self, *args, **kwargs):
