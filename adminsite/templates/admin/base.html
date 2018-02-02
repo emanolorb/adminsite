@@ -47,7 +47,11 @@
                         <img class="background" src="{% static 'material/imgs/sidenav.svg' %}">
                         {% block userphoto %}
                         {% if user.photo %}
-                        <a href="#"><img class="circle" src="{{ user.photo.url }}"></a>
+                            {% if user.photo.url %}
+                                <a href="#"><img class="circle" src="{{ user.photo.url }}"></a>
+                            {% else %}
+                                <a href="#"><img class="circle" src="{% static 'material/imgs/user.png' %}"></a>
+                            {% endif %}
                         {% else %}
                         <a href="#"><img class="circle" src="{% static 'material/imgs/user.png' %}"></a>
                         {% endif %}
@@ -67,12 +71,16 @@
                     <ul class="collapsible collapsible-accordion">
                         <li>
                             <a class="collapsible-header{% if app.active %} active{% endif %}">
-                                {% if app.name == 'Transactions' %}
-                                    <i class="material-icons">transform</i>{{ app.name|truncatechars:23 }}
+                                {% if app.name == 'Time Worked' %}
+                                    <i class="material-icons">schedule</i>{{ app.name|truncatechars:23 }}
                                 {% elif app.name == 'Customers'  or app.name == 'Workers'%}
                                     <i class="material-icons">contacts</i>{{ app.name|truncatechars:23 }}
                                 {% elif app.name == 'Users' %}
                                     <i class="material-icons">android</i>{{ app.name|truncatechars:23 }}
+                                {% elif app.name == 'Work Order' %}
+                                    <i class="material-icons">receipt</i>{{ app.name|truncatechars:23 }}
+                                {% elif app.name == 'Administrators' %}
+                                    <i class="material-icons">supervisor_account</i>{{ app.name|truncatechars:23 }}
                                 {% else %}
                                     {{ app.app_icon }}{{ app.name|truncatechars:23 }}
                                 {% endif %}
